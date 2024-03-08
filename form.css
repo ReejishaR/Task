@@ -1,35 +1,91 @@
-*{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-.form{
+.container {
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 50px;
-    width: 350px;
-    margin-left: 600px;
-    background-color: blue;
+    box-sizing: border-box; 
+    overflow: auto;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    background: rgb(179, 133, 222);
     border-radius: 20px;
+
 }
 
-.form label{
-    color: white;
+.input-form label {
+    display: block;
+    margin-bottom: 5px;
 }
 
-.form input{
-    padding: 10px 20px;
-    border: none;
+.input-form input {
+   
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box; 
 }
 
-.submit-btn{
-    margin-top: 10px;
-    padding: 10px 20px;
+.table-container {
+    overflow: auto;
+}
+
+.submit-btn {
+    padding: 10px;
     background-color: blueviolet;
+    color: #fff;
     border: none;
-    border-radius: 6px;
-    margin-bottom: 20px;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    
+    border: 1px solid #ddd;
+}
+th{
+    background-color:blueviolet;
+    color: white;
+    cursor: pointer;
+}
+th span{
+    margin-left: 90px;
+    cursor: pointer;
+}
+
+
+th, td {
+    text-align: left;
+    padding: 10px;
+}
+
+tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #969090;
+}
+
+
+.filter-btn{
+    display: flex;
+    justify-content: space-between;
+}
+
+th i.fa {
+    display: block;
+    float: none;
 }
