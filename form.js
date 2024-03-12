@@ -1,14 +1,16 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   displayTableUserData();
   displayUserData(currentPage);
   toggleTable();
 });
-
-document.getElementById('name').addEventListener('input', function(event) {
+document.addEventListener("click", function (e) {
+  enableUpDownButton();
+});
+document.getElementById('name').addEventListener('input', function (event) {
   this.value = this.value.replace(/[^a-zA-Z -]/g, '');
 });
 
-document.getElementById('phone').addEventListener('input', function(event) {
+document.getElementById('phone').addEventListener('input', function (event) {
   this.value = this.value.replace(/\D/g, '').substring(0, 10);
 });
 
@@ -25,48 +27,48 @@ function validateForm() {
   var phoneRegex = /^[0-9]{10}$/;
 
   if (name === '' || email === '' || phone === '') {
-      alert("Please enter all fields");
-      isValid = false;
+    alert("Please enter all fields");
+    isValid = false;
   } else if (name.length < 4) {
-      alert("Username should contain at least 4 characters");
-      isValid = false;
+    alert("Username should contain at least 4 characters");
+    isValid = false;
   } else if (!emailRegex.test(email)) {
-      alert("Email address is not valid");
-      isValid = false;
+    alert("Email address is not valid");
+    isValid = false;
   } else if (!phoneRegex.test(phone)) {
-      alert("Phone number should be 10 digits");
-      isValid = false;
+    alert("Phone number should be 10 digits");
+    isValid = false;
   }
 
   if (isValid) {
-      
-      const user = {
-          name: name,
-          email: email,
-          phone: phone,
-          age: age,
-      };
-      userData.push(user);
-      localStorage.setItem("userDetails", JSON.stringify(userData));
-      displayUserData(currentPage);
+
+    const user = {
+      name: name,
+      email: email,
+      phone: phone,
+      age: age,
+    };
+    userData.push(user);
+    localStorage.setItem("userDetails", JSON.stringify(userData));
+    displayUserData(currentPage);
   }
 
   return isValid;
 }
 const tableBody = document.getElementById('tableBody');
-function displayTableUserData() {  
-  tableBody.innerHTML = ''; 
+function displayTableUserData() {
+  tableBody.innerHTML = '';
 
   userData.forEach(user => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
+    const row = document.createElement('tr');
+    row.innerHTML = `
           <td>${user.name}</td>
           <td>${user.age}</td>
           <td>${user.email}</td>
           <td>${user.phone}</td>
       `;
-      tableBody.appendChild(row);
-  }); 
+    tableBody.appendChild(row);
+  });
 }
 
 const tbody = document.getElementById("tableBody");
@@ -74,7 +76,7 @@ let rowsPerPage = 5;
 let currentPage = 1;
 const paginationSelect = document.getElementById('pagination-column');
 
-function paginationChange(){
+function paginationChange() {
   rowsPerPage = paginationSelect.value;
   console.log("pageChange");
   displayUserData(currentPage);
@@ -85,14 +87,14 @@ function displayUserData(page) {
   const endIndex = startIndex + rowsPerPage;
   const rows = Array.from(document.querySelectorAll("#myTable tbody tr"));
   rows.forEach((row, index) => {
-      if (index >= startIndex && index < endIndex) {
-          row.style.display = 'table-row';
-      } else {
-          row.style.display = 'none';
-      }
+    if (index >= startIndex && index < endIndex) {
+      row.style.display = 'table-row';
+    } else {
+      row.style.display = 'none';
+    }
   });
 
-  updatePagination(); 
+  updatePagination();
 }
 
 const prevButton = document.getElementById("prev");
@@ -100,16 +102,16 @@ const nextButton = document.getElementById("next");
 
 prevButton.addEventListener("click", () => {
   if (currentPage > 1) {
-      currentPage--;
-      displayUserData(currentPage);
+    currentPage--;
+    displayUserData(currentPage);
   }
 });
 
 nextButton.addEventListener("click", () => {
   const lastPage = Math.ceil(tbody.querySelectorAll("tr").length / rowsPerPage);
   if (currentPage < lastPage) {
-      currentPage++;
-      displayUserData(currentPage);
+    currentPage++;
+    displayUserData(currentPage);
   }
 });
 
@@ -119,33 +121,29 @@ function updatePagination() {
   nextButton.disabled = currentPage === lastPage;
 }
 function searchItem() {
-  const filterSearchItem = document.getElementById('searchInput').value.toLowerCase();
-  const rows = tableBody.querySelectorAll("tr");
-
-  let count = 0;
-  currentPage = 1; 
-
-  rows.forEach((row) => {
-    const user = userData[row.rowIndex - 1]; 
-
+  const searchValue = document.getElementById('searchInput').value.trim().toLowerCase();
+  // const filteredUserData = userData.filter(user => {
+  //   const userValues = Object.values(user);
+  //   return userValues.some(value => value.toString().toLowerCase().includes(searchValue));
+  // });
+  const filteredUserData = userData.filter(user=>{
     const userValues = Object.values(user);
-    let found = false;
-
-    userValues.forEach((value) => {
-      if (value.toString().toLowerCase().includes(filterSearchItem)) {
-        found = true;
-        return; 
-      }
-    });
-
-    if ((found || filterSearchItem === "") && count < rowsPerPage) {
-      row.style.display = "";
-      count++;
-    } else {
-      row.style.display = "none";
-    }
+    console.log(userValues);
+    return userValues.some(value=>value.toString().toLowerCase().includes(searchValue));
+  })
+  tableBody.innerHTML = '';
+  filteredUserData.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.age}</td>
+      <td>${user.email}</td>
+      <td>${user.phone}</td>
+    `;
+    tableBody.appendChild(row);
   });
 
+  
   updatePagination();
 }
 
@@ -153,61 +151,74 @@ var displayTable = document.getElementById("displayTable");
 let showTable = document.getElementById('showTable');
 
 function toggleTable() {
-    if (displayTable.style.display === 'none') {
+  if (displayTable.style.display === 'none') {
 
-        displayTable.style.display = 'block';
-        showTable.innerText ='Hide';
-    } else {
-        displayTable.style.display = 'none';
-        showTable.innerText ='Show';
+    displayTable.style.display = 'block';
+    showTable.innerText = 'Hide';
+  } else {
+    displayTable.style.display = 'none';
+    showTable.innerText = 'Show';
 
-    }
+  }
 }
 
-const headers = document.querySelectorAll("#myTable th");
-const sortingOrder = Array.from(headers).map(() => -1);
+const headers = document.querySelectorAll("#myTable th ");
+const sortingOrder = Array.from(headers).map(() => 1);
+let upbutton = document.getElementById("fa-caret-up");
+let downButton = document.getElementById("fa-caret-down");
+
+function enableUpDownButton() {
+  if (upbutton.style.color === "white") {
+    downButton.style.color = 'grey'
+  } else {
+    downButton.style.color = 'white'
+  }
+}
 function toggleSortOrder(index) {
-    
-    sortingOrder[index] *= -1;
 
-    headers.forEach(header => {
-        header.querySelector("i.fa-caret-up").classList.remove("active");
-        header.querySelector("i.fa-caret-down").classList.remove("active");
-    });
+  sortingOrder[index] *= -1;
 
-    
-    if (sortingOrder[index] === 1) {
-        headers[index].querySelector("i.fa-caret-up").classList.add("active");
-    } else {
-        headers[index].querySelector("i.fa-caret-down").classList.add("active");
-    }
+  headers.forEach(header => {
+    header.querySelector("i.fa-caret-up").classList.remove("active");
+    header.querySelector("i.fa-caret-down").classList.remove("active");
+  });
 
-    console.log(index);
-    sortTable(index);
+
+  if (sortingOrder[index] === 1) {
+    headers[index].querySelector("i.fa-caret-up").classList.add("active");
+
+
+  } else {
+    headers[index].querySelector("i.fa-caret-down").classList.add("active");
+
+  }
+
+  console.log(index);
+  sortTable(index);
 }
 
 
 function sortTable(columnIndex) {
-  const rows = Array.from(document.querySelectorAll("#myTable tbody tr"));
-    console.log(rows);
-    const sortedRows = rows.sort((rowA, rowB) => {
-        const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
-        console.log("1",cellA);
-        const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
-        // console.log("2",cellB);
-        return sortingOrder[columnIndex] * (cellA > cellB ? 1 : -1);
-    });
+  const tableBody = document.querySelector("#myTable tbody");
+  const rows = Array.from(tableBody.querySelectorAll("tr"));
 
-    tableBody.innerHTML = "";
+  const sortedRows = rows.map(row => row);
+  sortedRows.sort((rowA, rowB) => {
+    const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+    const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+    return sortingOrder[columnIndex] * (cellA.localeCompare(cellB));
+  });
 
-    
-    sortedRows.forEach(row => {
-        tableBody.appendChild(row);
-    });
+  tableBody.innerHTML = "";
+
+  sortedRows.forEach(row => {
+    tableBody.appendChild(row);
+  });
 }
 
+
 headers.forEach((header, index) => {
-    header.addEventListener("click", () => {
-        toggleSortOrder(index);
-    });
+  header.addEventListener("click", () => {
+    toggleSortOrder(index);
+  });
 });
